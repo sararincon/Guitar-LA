@@ -7,6 +7,20 @@ import { db } from "../data/db";
 
 function App() {
   const [data, setData] = useState(db);
+  const [cart, setCart] = useState([]);
+
+  function addToCart(item) {
+    const itemExists = cart.findIndex((guitar) => guitar.id === item.id);
+    if (itemExists >= 0) {
+      // exite en el carrito
+      const updateCart = [...cart]; //Copia del state
+      updateCart[itemExists].quantity++; //realizo los cambio
+      setCart(updateCart); //lo seteo
+    } else {
+      item.quantity = 1;
+      setCart([...cart, item]);
+    }
+  }
 
   // useEffect(() => {
   //   setData(db);
@@ -14,7 +28,7 @@ function App() {
 
   return (
     <>
-      <Header />
+      <Header cart={cart} />
 
       <main className="container-xl mt-5">
         <h2 className="text-center">Nuestra Colección</h2>
@@ -24,6 +38,8 @@ function App() {
             <Guitar
               key={guitar.id} //cada vez que se itere en un componente, se debe aplicar el valor prop de key pasando un valor unico
               guitar={guitar}
+              setCart={setCart}
+              addToCart={addToCart}
             />
           ))}
         </div>
